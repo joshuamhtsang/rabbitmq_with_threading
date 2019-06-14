@@ -7,6 +7,7 @@ import pika
 
 def do_something(channel, method, body):
     try:
+        print("The number is : ", body["number"])
         number = int(body["number"])
         for i in range(0, number):
             print(i)
@@ -19,8 +20,12 @@ def do_something(channel, method, body):
 
 
 def on_message(channel, method, properties, body):
-    body = json.loads(body)
-    print("The number is : ", body["number"])
+    try:
+        body = json.loads(body)
+    except Exception as e:
+        print(e)
+        channel.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+        raise e
 
     thread = threading.Thread(target=do_something, args=[channel, method, body])
     thread.start()
@@ -36,7 +41,7 @@ def main():
             host='localhost',
             port=5672,
             credentials=rabbit_credentials,
-            socket_timeout=1200,
+            #socket_timeout=1200,
             heartbeat=10
         )
     )
