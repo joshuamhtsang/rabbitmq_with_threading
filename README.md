@@ -10,6 +10,10 @@ $ docker run -d --hostname my-rabbit --name rabbitmq_threading_test -p 8080:1567
 You can now login to the Management UI at: http://localhost:8080/
 For login use 'joshua' and 'guest' (this can be changed if you desire in the UI).
 
+Now you can spin up the consumer:
+
+$ python3 consumer.py 
+
 Now you can publish the following message into the 'eric.request' queue:
 
 {
