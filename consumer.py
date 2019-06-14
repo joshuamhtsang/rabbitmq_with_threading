@@ -9,7 +9,8 @@ def do_something(number):
     try:
         number = int(number)
         for i in range(0, number):
-            time.sleep(number)
+            print(i)
+            time.sleep(1)
     except Exception as e:
         print(e)
         raise e
@@ -17,8 +18,9 @@ def do_something(number):
 
 def on_message(channel, method, properties, body):
     body = json.loads(body)
+    print(body["number"])
 
-    thread = threading.Thread(target=do_something, args=(body["number"]))
+    thread = threading.Thread(target=do_something, args=[body["number"]])
     thread.start()
     while thread.is_alive():  # Loop while the thread is processing
         channel._connection.sleep(1.0)
@@ -40,7 +42,9 @@ def main():
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(on_message, 'eric.request')
     try:
+        print("Consuming...")
         channel.start_consuming()
+        print("... Yummy!")
     except KeyboardInterrupt:
         channel.stop_consuming()
     channel.close()
