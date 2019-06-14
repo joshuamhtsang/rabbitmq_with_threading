@@ -30,7 +30,8 @@ def on_message(channel, method, properties, body):
     thread = threading.Thread(target=do_something, args=[channel, method, body])
     thread.start()
     while thread.is_alive():  # Loop while the thread is processing
-        channel._connection.sleep(10.0)
+        print("Channel staying alive...")
+        channel._connection.sleep(1.0)
     print('Back from thread')
 
 
@@ -54,6 +55,8 @@ def main():
     except KeyboardInterrupt:
         print("Consumer stopping...!")
         channel.stop_consuming()
+    except Exception as e:
+        pass
     channel.close()
 
 
