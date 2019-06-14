@@ -14,20 +14,19 @@ def do_something(channel, method, body):
         channel.basic_ack(delivery_tag=method.delivery_tag)
     except Exception as e:
         print(e)
-        channel.basic_ack(delivery_tag=method.delivery_tag)
+        channel.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
         raise e
 
 
 def on_message(channel, method, properties, body):
     body = json.loads(body)
-    print(body["number"])
+    print("The number is : ", body["number"])
 
     thread = threading.Thread(target=do_something, args=[channel, method, body])
     thread.start()
     while thread.is_alive():  # Loop while the thread is processing
-        channel._connection.sleep(1.0)
+        channel._connection.sleep(10.0)
     print('Back from thread')
-    #channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def main():
@@ -38,7 +37,8 @@ def main():
             port=5672,
             credentials=rabbit_credentials,
             socket_timeout=1200,
-            heartbeat=60)
+            heartbeat=10
+        )
     )
     channel = connection.channel()
     channel.basic_qos(prefetch_count=1)
@@ -46,11 +46,13 @@ def main():
     try:
         print("Consuming...")
         channel.start_consuming()
-        print("... Yummy!")
     except KeyboardInterrupt:
+        print("Consumer stopping...!")
         channel.stop_consuming()
     channel.close()
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
+        time.sleep(1)
