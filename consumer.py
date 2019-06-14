@@ -5,6 +5,19 @@ import time
 import pika
 
 
+def ack_message(channel, method, type):
+    if channel.is_open:
+        if type == 'ack':
+            channel.basic_ack(method.delivery_tag)
+        elif type == 'nack':
+            channel.basic_nack(method.delivery_tag, requeue=False)
+        else:
+            print("Invalid acknowledgement type.")
+    else:
+        print("The channel is now closed and therefore cannot ack message on the same channel.")
+        pass
+
+
 def do_something(channel, method, body):
     try:
         print("The number is : ", body["number"])
@@ -12,10 +25,10 @@ def do_something(channel, method, body):
         for i in range(0, number):
             print(i)
             time.sleep(1)
-        channel.basic_ack(delivery_tag=method.delivery_tag)
+        ack_message(channel, method, 'ack')
     except Exception as e:
         print(e)
-        channel.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+        ack_message(channel, method, 'nack')
         raise e
 
 
