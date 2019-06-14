@@ -1,0 +1,65 @@
+{
+  "exchanges": [
+    {
+      "name": "eric",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "eric.request",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "eric",
+      "vhost": "/",
+      "destination": "eric.request",
+      "destination_type": "queue",
+      "routing_key": "request",
+      "arguments": {}
+    }
+  ],
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "UaV/sJW4F+bjaOTrg6b2XMtL4iLcGPNfFNqoj4beQhVHpST9",
+      "tags": "monitoring"
+    },
+    {
+      "name": "joshua",
+      "password_hash": "UaV/sJW4F+bjaOTrg6b2XMtL4iLcGPNfFNqoj4beQhVHpST9",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "joshua",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ]
+}
