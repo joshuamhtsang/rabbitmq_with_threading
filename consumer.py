@@ -1,6 +1,7 @@
 import json
 import threading
 import time
+import sys
 
 import pika
 
@@ -13,6 +14,7 @@ def ack_message(channel, method, type):
             channel.basic_nack(method.delivery_tag, requeue=False)
         else:
             print("Invalid acknowledgement type.")
+            sys.exit(0)
     else:
         print("The channel is now closed and therefore cannot ack message on the same channel.")
         pass
