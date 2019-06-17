@@ -44,6 +44,7 @@ def on_message(channel, method, properties, body):
     thread.start()
     while thread.is_alive():  # Loop while the thread is processing
         print("Channel staying alive...")
+        channel._connection.process_data_events()
         channel._connection.sleep(1.0)
     print('Back from thread')
 
